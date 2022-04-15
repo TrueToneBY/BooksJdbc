@@ -1,0 +1,17 @@
+version: '3.1'
+
+volumes:
+  pg_selectel:
+
+services:
+  books:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_USER=book
+      - POSTGRES_DB=books
+#    volumes:
+#      - pg_project:/var/lib/postgresql/data
+    ports:
+      - ${POSTGRES_PORT:-5430}:5430
