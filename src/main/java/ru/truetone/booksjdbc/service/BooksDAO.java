@@ -9,13 +9,13 @@ import ru.truetone.booksjdbc.model.Books;
 import java.util.List;
 
 @Service
-public class BooksServices implements BooksBusines<Books> {
+public class BooksDAO implements BooksBusines<Books> {
 
     final String GET_QUERY = "select id,isbn,name,author,pages,price from books";
 
     JdbcTemplate jdbcTemplate;
 
-    public BooksServices(JdbcTemplate jdbcTemplate) {
+    public BooksDAO(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
