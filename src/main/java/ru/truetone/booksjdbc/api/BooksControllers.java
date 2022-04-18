@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.truetone.booksjdbc.model.Books;
-import ru.truetone.booksjdbc.service.BooksServices;
+import ru.truetone.booksjdbc.service.BooksDAO;
 
 import java.util.List;
 
@@ -16,12 +16,12 @@ import java.util.List;
 public class BooksControllers {
 
     @Autowired
-    BooksServices booksServices;
+    BooksDAO booksDAO;
 
     @GetMapping("/books")
-    public String getAllBooks(){
+    public List<Books> getAllBooks(){
         log.info("GetBooksAll_OK");
-        return "учи блять матьчасть";
+        return booksDAO.getBooks();
     }
 
 
