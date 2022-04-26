@@ -2,6 +2,7 @@ package ru.truetone.booksjdbc.service;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import ru.truetone.booksjdbc.busines.BooksBusines;
 import ru.truetone.booksjdbc.model.Books;
@@ -19,6 +20,7 @@ public class BooksDAO implements BooksBusines<Books> {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Transactional
     @Override
     public List<Books> getBooks() {
         return jdbcTemplate.query(GET_QUERY,new BooksRowMapper());
