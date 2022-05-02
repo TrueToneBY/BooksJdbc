@@ -1,20 +1,15 @@
 package ru.truetone.booksjdbc.api;
 
 
-import io.swagger.v3.oas.models.headers.Header;
-import jdk.jfr.ContentType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import reactor.netty.http.server.HttpServerResponse;
 import ru.truetone.booksjdbc.model.Books;
-import ru.truetone.booksjdbc.service.BooksDAO;
+import ru.truetone.booksjdbc.service.BooksDAOImpl;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -23,12 +18,88 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-@RestController
+@RestController//говорит спрингу, что данный класс является REST контроллером.
 @RequestMapping("/api")
 public class BooksControllers {
 
-    @Autowired
-    BooksDAO booksDAO;
+    private final BooksDAOImpl booksDAO;
+
+   //говорит спрингу, что в этом месте необходимо внедрить зависимость
+    public BooksControllers(BooksDAOImpl booksDAO) {
+        this.booksDAO = booksDAO;
+    }
+
+    /**
+     * ResponseEntity<?> специальный класс для возврата ответов.
+     * С помощью него мы сможем в дальнейшем вернуть клиенту HTTP статус код.
+     * @param books
+     * @return
+     */
+    @PostMapping(value = "/books/hash/map")//здесь мы обозначаем, что данный метод обрабатывает POST запросы на адрес
+    //значение этого параметра подставляется из тела запроса. Об этом говорит аннотация  @RequestBody
+    public ResponseEntity<?> create(@RequestBody Books books){
+        booksDAO.create(books);
+        log.info("@PostMapping//books_hash_map");
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    /**
+     * На этот раз мы возвращаем ResponseEntity<List<Client>>, только в этот раз, помимо HTTP статуса,
+     * мы вернем еще и тело ответа, которым будет список клиентов.
+     * @return
+     */
+    @GetMapping(value = "/books_get_hash")
+    public ResponseEntity<List<Books>> read(){
+        final List<Books> books = booksDAO.readAll();
+
+        return books != null && !books.isEmpty()
+        ? new ResponseEntity<>(books,HttpStatus.OK)//HTTP статус 200 OK
+        : new ResponseEntity<>(HttpStatus.NOT_FOUND);//HTTP статус 404 Not Found
+    }
+
+    /**
+     * еременная, которая определена в URI. value = "/books/{id}". Мы указали ее в фигурных скобках.
+     * А в параметрах метода принимаем её в качестве Integer переменной, с помощью аннотации @PathVariable(name = "id")
+     * @param id
+     * @return
+     */
+    @GetMapping(value = "/bookd/{id}")
+    public ResponseEntity<Books> read(@PathVariable(name = "id") Integer id){
+        final Books books = booksDAO.read(id);
+
+        return books != null
+                ? new ResponseEntity<>(books,HttpStatus.OK)//HTTP статус 200 OK
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);//HTTP статус 404 Not Found
+    }
+
+    /**
+     * метод update обрабатывает PUT запросы (аннотация @PutMapping)
+     * @param id
+     * @param books
+     * @return
+     */
+    @PutMapping(value = "/books/{id}")
+    public ResponseEntity<?> update(@PathVariable(name = "id") Integer id,@RequestBody Books books){
+        final boolean updated = booksDAO.update(books,id);
+
+        return updated
+                ? new ResponseEntity<>(HttpStatus.OK)//HTTP статус 200 OK
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);//HTTP статус 404 Not Found
+    }
+
+    /**
+     * метод delete обрабатывает DELETE запросы (аннотация DeleteMapping).
+     * @param id
+     * @return
+     */
+    @DeleteMapping(value = "/books/{id}")
+    public ResponseEntity<?> delete(@PathVariable(name = "id") Integer id){
+        final boolean deleted = booksDAO.delete(id);
+
+        return deleted
+                ? new ResponseEntity<>(HttpStatus.OK)//HTTP статус 200 OK
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);//HTTP статус 404 Not Found
+    }
 
     @GetMapping("/books")
     public List<Books> getAllBooks(){

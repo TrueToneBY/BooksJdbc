@@ -8,21 +8,21 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-public class MyWebApplicationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+//public class MyWebApplicationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
 
-    @Override
-    protected Class<?>[] getRootConfigClasses() {
-        return new Class[]{};
-    }
-
-    @Override
-    protected Class<?>[] getServletConfigClasses() {
-        return new Class[]{};
-    }
-
-    @Override
-    protected String[] getServletMappings() {
-        return new String[]{"/root"};
-    }
-}
+//    @Override
+//    protected Class<?>[] getRootConfigClasses() {
+//        return new Class[]{};
+//    }
+//
+//    @Override
+//    protected Class<?>[] getServletConfigClasses() {
+//        return new Class[]{};
+//    }
+//
+//    @Override
+//    protected String[] getServletMappings() {
+//        return new String[]{"/root"};
+//    }
+//}
